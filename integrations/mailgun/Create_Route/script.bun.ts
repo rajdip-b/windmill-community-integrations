@@ -1,7 +1,6 @@
 type Mailgun = {
 	apiKey: string
 	domain: string
-	baseUrl?: string
 }
 
 export async function main(
@@ -20,7 +19,7 @@ export async function main(
 	form.append('action', data.action)
 
 	return (
-		await fetch(`${resource.baseUrl}/routes`, {
+		await fetch(`https://api.mailgun.net/v3/routes`, {
 			method: 'POST',
 			headers: {
 				Authorization: 'Basic ' + Buffer.from(`api:${resource.apiKey}`).toString('base64')

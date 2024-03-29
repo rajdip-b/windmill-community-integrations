@@ -1,7 +1,6 @@
 type Mailgun = {
 	apiKey: string
 	domain: string
-	baseUrl?: string
 }
 
 export async function main(
@@ -17,7 +16,7 @@ export async function main(
 ) {
 	return (
 		await fetch(
-			`${resource.baseUrl}/domains?limit=${data.limit ?? 100}&skip=${data.skip ?? 0}&state=${
+			`https://api.mailgun.net/v3/domains?limit=${data.limit ?? 100}&skip=${data.skip ?? 0}&state=${
 				data.state ?? 'active'
 			}&sort=${data.sort ?? 'name'}${data.authority ?? '&authority'}&search=${data.search ?? ''}`,
 			{

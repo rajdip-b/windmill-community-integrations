@@ -9,7 +9,7 @@ test('Delete Mailing List Member', async () => {
 	createMailingListFormData.append('name', 'Test')
 	createMailingListFormData.append('description', 'Test List')
 
-	await fetch(`${resource.baseUrl}/lists`, {
+	await fetch(`https://api.mailgun.net/v3/lists`, {
 		method: 'POST',
 		headers: {
 			Authorization: 'Basic ' + Buffer.from(`api:${resource.apiKey}`).toString('base64')
@@ -24,7 +24,7 @@ test('Delete Mailing List Member', async () => {
 	memberFormData.append('subscribed', 'true')
 	memberFormData.append('upsert', 'true')
 
-	await fetch(`${resource.baseUrl}/lists/test@${resource.domain}/members`, {
+	await fetch(`https://api.mailgun.net/v3/lists/test@${resource.domain}/members`, {
 		method: 'POST',
 		headers: {
 			Authorization: 'Basic ' + Buffer.from(`api:${resource.apiKey}`).toString('base64')
@@ -43,7 +43,7 @@ test('Delete Mailing List Member', async () => {
 
 	// Try fetching the member again to see if it was deleted
 	const fetchMemberResponse = await fetch(
-		`${resource.baseUrl}/lists/test@${resource.domain}/members/test@example.com`,
+		`https://api.mailgun.net/v3/lists/test@${resource.domain}/members/test@example.com`,
 		{
 			headers: {
 				Authorization: 'Basic ' + Buffer.from(`api:${resource.apiKey}`).toString('base64')
@@ -53,7 +53,7 @@ test('Delete Mailing List Member', async () => {
 	expect(fetchMemberResponse.status).toBe(404)
 
 	// Delete the mailing list
-	await fetch(`${resource.baseUrl}/lists/test@${resource.domain}`, {
+	await fetch(`https://api.mailgun.net/v3/lists/test@${resource.domain}`, {
 		method: 'DELETE',
 		headers: {
 			Authorization: 'Basic ' + Buffer.from(`api:${resource.apiKey}`).toString('base64')

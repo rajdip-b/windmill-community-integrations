@@ -6,7 +6,6 @@ You will need to create a Mailgun account to get started with the integration. O
 
 - `MAILGUN_API_KEY`: Your Mailgun API key. You can create one from the Mailgun dashboard -> API keys.
 - `MAILGUN_DOMAIN`: Your Mailgun domain. You can find this in the Mailgun dashboard -> Sending -> Domains.
-- `MAILGUN_BASE_URL`: The base URL for the Mailgun API. This is usually `https://api.mailgun.net/v3`.
 
 To test the integration, you will need to add another environment variable:
 

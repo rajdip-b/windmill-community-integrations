@@ -15,7 +15,7 @@ test('Create Route', async () => {
 	// 	expect(response.route.priority).toBe(0)
 	// 	expect(response.route.description).toBe('Test Route')
 	// 	// Fetch the route
-	// 	const fetchResponse = await fetch(`${resource.baseUrl}/routes/${response.route.id}`, {
+	// 	const fetchResponse = await fetch(`https://api.mailgun.net/v3/routes/${response.route.id}`, {
 	// 		headers: {
 	// 			Authorization: 'Basic ' + Buffer.from(`api:${resource.apiKey}`).toString('base64')
 	// 		}
@@ -24,7 +24,7 @@ test('Create Route', async () => {
 	// 	expect(fetchedRoute).toBeDefined()
 	// 	expect(fetchedRoute.route.id).toBe(response.route.id)
 	// 	// Delete the route
-	// 	const deleteResponse = await fetch(`${resource.baseUrl}/routes/${response.route.id}`, {
+	// 	const deleteResponse = await fetch(`https://api.mailgun.net/v3/routes/${response.route.id}`, {
 	// 		method: 'DELETE',
 	// 		headers: {
 	// 			Authorization: 'Basic ' + Buffer.from(`api:${resource.apiKey}`).toString('base64')

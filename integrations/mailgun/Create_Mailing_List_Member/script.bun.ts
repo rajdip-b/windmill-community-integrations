@@ -1,7 +1,6 @@
 type Mailgun = {
 	apiKey: string
 	domain: string
-	baseUrl?: string
 }
 
 export async function main(
@@ -25,7 +24,7 @@ export async function main(
 	form.append('upsert', data.member.upsert)
 
 	return (
-		await fetch(`${resource.baseUrl}/lists/${data.listAddress}/members`, {
+		await fetch(`https://api.mailgun.net/v3/lists/${data.listAddress}/members`, {
 			method: 'POST',
 			headers: {
 				Authorization: 'Basic ' + Buffer.from(`api:${resource.apiKey}`).toString('base64')

@@ -1,7 +1,6 @@
 type Mailgun = {
 	apiKey: string
 	domain: string
-	baseUrl?: string
 }
 
 export async function main(
@@ -13,7 +12,7 @@ export async function main(
 ) {
 	return (
 		await fetch(
-			`${resource.baseUrl}/address/validate?address=${data.address}&provider_lookup=${
+			`https://api.mailgun.net/v3/address/validate?address=${data.address}&provider_lookup=${
 				data.provider_lookup ?? true
 			}`,
 			{

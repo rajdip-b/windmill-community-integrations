@@ -9,7 +9,7 @@ test('Create Mailing List Member', async () => {
 	createMailingListFormData.append('name', 'Test')
 	createMailingListFormData.append('description', 'Test List')
 
-	const createMailingListResponse = await fetch(`${resource.baseUrl}/lists`, {
+	const createMailingListResponse = await fetch(`https://api.mailgun.net/v3/lists`, {
 		method: 'POST',
 		headers: {
 			Authorization: 'Basic ' + Buffer.from(`api:${resource.apiKey}`).toString('base64')
@@ -36,11 +36,14 @@ test('Create Mailing List Member', async () => {
 	expect(response.member).toBeDefined()
 
 	// Delete the mailing list
-	const deleteMailingListResponse = await fetch(`${resource.baseUrl}/lists/${list.address}`, {
-		method: 'DELETE',
-		headers: {
-			Authorization: 'Basic ' + Buffer.from(`api:${resource.apiKey}`).toString('base64')
+	const deleteMailingListResponse = await fetch(
+		`https://api.mailgun.net/v3/lists/${list.address}`,
+		{
+			method: 'DELETE',
+			headers: {
+				Authorization: 'Basic ' + Buffer.from(`api:${resource.apiKey}`).toString('base64')
+			}
 		}
-	})
+	)
 	await deleteMailingListResponse.json()
 })

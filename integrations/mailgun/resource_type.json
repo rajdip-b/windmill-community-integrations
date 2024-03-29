@@ -11,10 +11,6 @@
 			"domain": {
 				"type": "string",
 				"description": "The domain to perform the action on"
-			},
-			"baseUrl": {
-				"type": "string",
-				"description": "Base URL of the Mailgun API. Defaults to https://api.mailgun.net/v3/"
 			}
 		},
 		"required": ["apiKey", "domain"]

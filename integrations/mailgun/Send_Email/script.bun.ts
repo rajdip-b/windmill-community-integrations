@@ -1,7 +1,6 @@
 type Mailgun = {
 	apiKey: string
 	domain: string
-	baseUrl?: string
 }
 
 export async function main(
@@ -67,7 +66,7 @@ export async function main(
 	Object.entries(data.others || {}).forEach(([key, value]) => form.append(key, value))
 
 	return (
-		await fetch(`${resource.baseUrl}/${resource.domain}/messages`, {
+		await fetch(`https://api.mailgun.net/v3/${resource.domain}/messages`, {
 			method: 'POST',
 			headers: {
 				Authorization: 'Basic ' + Buffer.from(`api:${resource.apiKey}`).toString('base64')

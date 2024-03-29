@@ -1,7 +1,6 @@
 type Mailgun = {
 	apiKey: string
 	domain: string
-	baseUrl?: string
 }
 
 export async function main(
@@ -12,11 +11,14 @@ export async function main(
 	}
 ) {
 	return (
-		await fetch(`${resource.baseUrl}/lists/${data.listAddress}/members/${data.memberAddress}`, {
-			method: 'GET',
-			headers: {
-				Authorization: 'Basic ' + Buffer.from(`api:${resource.apiKey}`).toString('base64')
+		await fetch(
+			`https://api.mailgun.net/v3/lists/${data.listAddress}/members/${data.memberAddress}`,
+			{
+				method: 'GET',
+				headers: {
+					Authorization: 'Basic ' + Buffer.from(`api:${resource.apiKey}`).toString('base64')
+				}
 			}
-		})
+		)
 	).json()
 }
