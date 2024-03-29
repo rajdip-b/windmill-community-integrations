@@ -1,19 +1,34 @@
+import { expect, test } from 'bun:test'
+import { main } from './script.bun.ts'
+import { resource } from '../resource.ts'
 
-import { expect, test } from "bun:test";
-import { main } from "./script.bun.ts";
-import { resource } from "../resource.ts";
+test('Suppress Email', async () => {
+	// Unsubscribe address
+	const response = await main(resource, [
+		{
+			address: 'test@example.com',
+			tags: ['example']
+		}
+	])
+	expect(response).toBeDefined()
 
-test("Suppress Email", async () => {
-  // script arguments here (also load environment variables if needed using Bun.env.VARIABLE_NAME!)
+	// Fetch the particular unsubscribe address
+	const fetchUnsubscribeResponse = (await (
+		await fetch(`https://api.mailgun.net/v3/${resource.domain}/unsubscribes/test@example.com`, {
+			headers: {
+				Authorization: 'Basic ' + Buffer.from(`api:${resource.apiKey}`).toString('base64')
+			}
+		})
+	).json()) as any
+	expect(fetchUnsubscribeResponse).toBeDefined()
+	expect(fetchUnsubscribeResponse.address).toBe('test@example.com')
+	expect(fetchUnsubscribeResponse.tags).toEqual(['example'])
 
-  console.log("TEST: Will test Suppress Email with arguments: " /* arguments */)
-
-  // any setup code here
-
-  // calling main
-  console.log("TEST: Running main function");
-  const response = await main(resource, /* script arguments */);
-
-  // assertions here
-  // test the response of the main function as well as the side effects of the action directly on the service
-});
+	// Delete the unsubscribed list
+	await fetch(`https://api.mailgun.net/v3/${resource.domain}/unsubscribes`, {
+		method: 'DELETE',
+		headers: {
+			Authorization: 'Basic ' + Buffer.from(`api:${resource.apiKey}`).toString('base64')
+		}
+	})
+})
