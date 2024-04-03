@@ -9,6 +9,7 @@ export async function main(
 		message: string
 		device?: string
 		title?: string
+		priority?: number
 	}
 ) {
 	const form = new URLSearchParams()
@@ -17,6 +18,7 @@ export async function main(
 	form.append('message', data.message)
 	data.device && form.append('device', data.device)
 	data.title && form.append('title', data.title)
+	data.priority && form.append('priority', data.priority.toString())
 
 	return (
 		await fetch('https://api.pushover.net/1/messages.json', {
