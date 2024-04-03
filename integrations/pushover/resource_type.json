@@ -1,0 +1,22 @@
+{
+	"resources": {
+		"pushover": {
+			"description": "Pushover resource type",
+			"schema": {
+				"$schema": "https://json-schema.org/draft/2020-12/schema",
+				"type": "object",
+				"properties": {
+					"apiToken": {
+						"type": "string",
+						"description": "Pushover API token"
+					},
+					"userKey": {
+						"type": "string",
+						"description": "Pushover user key"
+					}
+				},
+				"required": ["apiToken", "userKey"]
+			}
+		}
+	}
+}
