@@ -18,7 +18,6 @@ test('Create Prospect', async () => {
 			body: createContactFormData
 		})
 	).json()) as any
-	console.log('createContactResponse', createContactResponse)
 
 	// Create an affiliation
 	const createAffiliationFormData = new URLSearchParams()
@@ -34,15 +33,13 @@ test('Create Prospect', async () => {
 			body: createAffiliationFormData
 		})
 	).json()) as any
-	console.log('createAffiliationResponse', createAffiliationResponse)
 
 	// Create a prospect
 	const response = (await main(resource, {
 		title: 'Test Prospect',
 		affiliationId: createAffiliationResponse.response.id,
-		typeId: 1
+		typeId: 2
 	})) as any
-	console.log(response)
 	expect(response.meta.status).toEqual('ok')
 	expect(response.response.title).toEqual('Test Prospect')
 	expect(response.response.id).toBeDefined()
@@ -58,7 +55,6 @@ test('Create Prospect', async () => {
 			}
 		)
 	).json()) as any
-	console.log(fetchProspectResponse)
 	expect(fetchProspectResponse.response.title).toEqual('Test Prospect')
 
 	// Delete the prospect

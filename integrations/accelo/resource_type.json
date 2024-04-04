@@ -1,16 +1,22 @@
 {
-  "description": "{resource type description}",
-  "schema": {
-    "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "type": "object",
-    "properties": {
-      "{property1}": {
-        "type": "string",
-        "description": "{property1 description}"
-      }
-    },
-    "required": [
-      "{property1}"
-    ]
-  }
+	"description": "Accelo",
+	"schema": {
+		"$schema": "https://json-schema.org/draft/2020-12/schema",
+		"type": "object",
+		"properties": {
+			"deployment": {
+				"type": "string",
+				"description": "The deployment URL of your Accelo instance. For example, 'https://example.accelo.com'."
+			},
+			"companyId": {
+				"type": "number",
+				"description": "The company ID of your Accelo instance."
+			},
+			"accessToken": {
+				"type": "string",
+				"description": "The access token of your Accelo instance."
+			}
+		},
+		"required": ["deployment", "companyId", "accessToken"]
+	}
 }
