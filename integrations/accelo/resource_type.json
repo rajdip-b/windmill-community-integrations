@@ -12,11 +12,15 @@
 				"type": "number",
 				"description": "The company ID of your Accelo instance."
 			},
-			"accessToken": {
+			"clientId": {
 				"type": "string",
-				"description": "The access token of your Accelo instance."
+				"description": "The client ID of your Accelo application."
+			},
+			"clientSecret": {
+				"type": "string",
+				"description": "The client secret of your Accelo application."
 			}
 		},
-		"required": ["deployment", "companyId", "accessToken"]
+		"required": ["deployment", "companyId", "clientId", "clientSecret"]
 	}
 }
