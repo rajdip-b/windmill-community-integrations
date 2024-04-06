@@ -3,15 +3,33 @@ import { main } from './script.bun.ts'
 import { resource } from '../resource.ts'
 
 test('Create Request', async () => {
+	// Fetch the access token
+	const accessTokenResponse = (await (
+		await fetch(`https://${resource.deployment}.api.accelo.com/oauth2/v0/token`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				Authorization: `Basic ${Buffer.from(
+					`${resource.clientId}:${resource.clientSecret}`
+				).toString('base64')}`
+			},
+			body: new URLSearchParams({
+				grant_type: 'client_credentials',
+				scope: 'write(all)'
+			})
+		})
+	).json()) as any
+	const accessToken = accessTokenResponse.access_token
+
 	// Create a request
 	const response = (await main(resource, {
 		title: 'Test Request',
 		body: 'This is a test request',
-		typeId: 2,
+		type_id: 2,
 		affiliation: {
 			contact: {
-				firstName: 'John',
-				lastName: 'Doe'
+				firstname: 'John',
+				lastname: 'Doe'
 			}
 		}
 	})) as any
@@ -25,7 +43,7 @@ test('Create Request', async () => {
 			`https://${resource.deployment}.api.accelo.com/api/v0/requests/${response.response.id}`,
 			{
 				headers: {
-					Authorization: `Bearer ${resource.accessToken}`
+					Authorization: `Bearer ${accessToken}`
 				}
 			}
 		)
@@ -38,7 +56,7 @@ test('Create Request', async () => {
 		{
 			method: 'DELETE',
 			headers: {
-				Authorization: `Bearer ${resource.accessToken}`
+				Authorization: `Bearer ${accessToken}`
 			}
 		}
 	)

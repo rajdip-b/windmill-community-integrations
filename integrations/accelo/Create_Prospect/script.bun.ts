@@ -1,5 +1,6 @@
 type Accelo = {
-	accessToken: string
+	clientId: string
+	clientSecret: string
 	deployment: string
 }
 
@@ -7,41 +8,48 @@ export async function main(
 	resource: Accelo,
 	data: {
 		title: string
-		affiliationId: number
-		typeId: number
-		statusId?: number
+		affiliation_id: number
+		type_id: number
+		status_id?: number
 		comments?: string
 		value?: number
 		success?: 'yes' | 'no'
-		staffId?: number
-		dueDate?: string
+		staff_id?: number
+		due_date?: string
 		weighting?: number
 		progress?: number
-		probabilityId?: number
+		probability_id?: number
 	}
 ) {
-	const form = new URLSearchParams()
-	form.append('title', data.title)
-	form.append('affiliation_id', data.affiliationId.toString())
-	form.append('type_id', data.typeId.toString())
-	data.statusId && form.append('status_id', data.statusId.toString())
-	data.comments && form.append('comments', data.comments)
-	data.value && form.append('value', data.value.toString())
-	data.success && form.append('success', data.success)
-	data.staffId && form.append('staff_id', data.staffId.toString())
-	data.dueDate && form.append('due_date', data.dueDate)
-	data.weighting && form.append('weighting', data.weighting.toString())
-	data.progress && form.append('progress', data.progress.toString())
-	data.probabilityId && form.append('probability_id', data.probabilityId.toString())
+	// Fetch the access token
+	const accessTokenResponse = (await (
+		await fetch(`https://${resource.deployment}.api.accelo.com/oauth2/v0/token`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				Authorization: `Basic ${Buffer.from(
+					`${resource.clientId}:${resource.clientSecret}`
+				).toString('base64')}`
+			},
+			body: new URLSearchParams({
+				grant_type: 'client_credentials',
+				scope: 'write(all)'
+			})
+		})
+	).json()) as any
+	const accessToken = accessTokenResponse.access_token
 
-	const res = await fetch(`https://${resource.deployment}.api.accelo.com/api/v0/prospects`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded',
-			Authorization: `Bearer ${resource.accessToken}`
-		},
-		body: form
-	})
-	console.log('res', res)
-	return res.json()
+	const form = new URLSearchParams()
+	Object.entries(data).forEach(([key, value]) => form.append(key, value + ''))
+
+	return (
+		await fetch(`https://${resource.deployment}.api.accelo.com/api/v0/prospects`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				Authorization: `Bearer ${accessToken}`
+			},
+			body: form
+		})
+	).json()
 }

@@ -3,6 +3,24 @@ import { main } from './script.bun.ts'
 import { resource } from '../resource.ts'
 
 test('Create Prospect', async () => {
+	// Fetch the access token
+	const accessTokenResponse = (await (
+		await fetch(`https://${resource.deployment}.api.accelo.com/oauth2/v0/token`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				Authorization: `Basic ${Buffer.from(
+					`${resource.clientId}:${resource.clientSecret}`
+				).toString('base64')}`
+			},
+			body: new URLSearchParams({
+				grant_type: 'client_credentials',
+				scope: 'write(all)'
+			})
+		})
+	).json()) as any
+	const accessToken = accessTokenResponse.access_token
+
 	// Create a contact
 	const createContactFormData = new URLSearchParams()
 	createContactFormData.append('firstname', 'John')
@@ -13,7 +31,7 @@ test('Create Prospect', async () => {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
-				Authorization: `Bearer ${resource.accessToken}`
+				Authorization: `Bearer ${accessToken}`
 			},
 			body: createContactFormData
 		})
@@ -28,7 +46,7 @@ test('Create Prospect', async () => {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
-				Authorization: `Bearer ${resource.accessToken}`
+				Authorization: `Bearer ${accessToken}`
 			},
 			body: createAffiliationFormData
 		})
@@ -37,8 +55,8 @@ test('Create Prospect', async () => {
 	// Create a prospect
 	const response = (await main(resource, {
 		title: 'Test Prospect',
-		affiliationId: createAffiliationResponse.response.id,
-		typeId: 2
+		affiliation_id: createAffiliationResponse.response.id,
+		type_id: 2
 	})) as any
 	expect(response.meta.status).toEqual('ok')
 	expect(response.response.title).toEqual('Test Prospect')
@@ -50,7 +68,7 @@ test('Create Prospect', async () => {
 			`https://${resource.deployment}.api.accelo.com/api/v0/prospects/${response.response.id}`,
 			{
 				headers: {
-					Authorization: `Bearer ${resource.accessToken}`
+					Authorization: `Bearer ${accessToken}`
 				}
 			}
 		)
@@ -63,7 +81,7 @@ test('Create Prospect', async () => {
 		{
 			method: 'DELETE',
 			headers: {
-				Authorization: `Bearer ${resource.accessToken}`
+				Authorization: `Bearer ${accessToken}`
 			}
 		}
 	)
@@ -74,7 +92,7 @@ test('Create Prospect', async () => {
 		{
 			method: 'DELETE',
 			headers: {
-				Authorization: `Bearer ${resource.accessToken}`
+				Authorization: `Bearer ${accessToken}`
 			}
 		}
 	)
@@ -85,7 +103,7 @@ test('Create Prospect', async () => {
 		{
 			method: 'DELETE',
 			headers: {
-				Authorization: `Bearer ${resource.accessToken}`
+				Authorization: `Bearer ${accessToken}`
 			}
 		}
 	)

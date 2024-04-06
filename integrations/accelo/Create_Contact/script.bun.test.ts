@@ -3,11 +3,29 @@ import { main } from './script.bun.ts'
 import { resource } from '../resource.ts'
 
 test('Create Contact', async () => {
+	// Fetch the access token
+	const accessTokenResponse = (await (
+		await fetch(`https://${resource.deployment}.api.accelo.com/oauth2/v0/token`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				Authorization: `Basic ${Buffer.from(
+					`${resource.clientId}:${resource.clientSecret}`
+				).toString('base64')}`
+			},
+			body: new URLSearchParams({
+				grant_type: 'client_credentials',
+				scope: 'write(all)'
+			})
+		})
+	).json()) as any
+	const accessToken = accessTokenResponse.access_token
+
 	// Create a new contact
 	const response = (await main(resource, {
-		firstName: 'John',
-		surName: 'Doe',
-		companyId: +resource.companyId
+		firstname: 'John',
+		surname: 'Doe',
+		company_id: +resource.companyId
 	})) as any
 	expect(response.meta.status).toEqual('ok')
 	expect(response.response.id).toBeDefined()
@@ -20,7 +38,7 @@ test('Create Contact', async () => {
 			`https://${resource.deployment}.api.accelo.com/api/v0/contacts/${response.response.id}`,
 			{
 				headers: {
-					Authorization: `Bearer ${resource.accessToken}`
+					Authorization: `Bearer ${accessToken}`
 				}
 			}
 		)
@@ -34,7 +52,7 @@ test('Create Contact', async () => {
 		{
 			method: 'DELETE',
 			headers: {
-				Authorization: `Bearer ${resource.accessToken}`
+				Authorization: `Bearer ${accessToken}`
 			}
 		}
 	)

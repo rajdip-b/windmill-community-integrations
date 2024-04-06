@@ -3,6 +3,24 @@ import { main } from './script.bun.ts'
 import { resource } from '../resource.ts'
 
 test('Update Contact', async () => {
+	// Fetch the access token
+	const accessTokenResponse = (await (
+		await fetch(`https://${resource.deployment}.api.accelo.com/oauth2/v0/token`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				Authorization: `Basic ${Buffer.from(
+					`${resource.clientId}:${resource.clientSecret}`
+				).toString('base64')}`
+			},
+			body: new URLSearchParams({
+				grant_type: 'client_credentials',
+				scope: 'write(all)'
+			})
+		})
+	).json()) as any
+	const accessToken = accessTokenResponse.access_token
+
 	// Create a contact
 	const createContactFormData = new URLSearchParams()
 	createContactFormData.append('firstname', 'John')
@@ -13,7 +31,7 @@ test('Update Contact', async () => {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
-				Authorization: `Bearer ${resource.accessToken}`
+				Authorization: `Bearer ${accessToken}`
 			},
 			body: createContactFormData
 		})
@@ -21,9 +39,9 @@ test('Update Contact', async () => {
 
 	// Update the contact
 	const response = (await main(resource, {
-		contactId: createContactResponse.response.id,
-		firstName: 'Jane',
-		surName: 'Smith'
+		contact_id: createContactResponse.response.id,
+		firstname: 'Jane',
+		surname: 'Smith'
 	})) as any
 	expect(response.meta.status).toEqual('ok')
 	expect(response.response.firstname).toEqual('Jane')
@@ -35,7 +53,7 @@ test('Update Contact', async () => {
 			`https://${resource.deployment}.api.accelo.com/api/v0/contacts/${response.response.id}`,
 			{
 				headers: {
-					Authorization: `Bearer ${resource.accessToken}`
+					Authorization: `Bearer ${accessToken}`
 				}
 			}
 		)
@@ -49,7 +67,7 @@ test('Update Contact', async () => {
 		{
 			method: 'DELETE',
 			headers: {
-				Authorization: `Bearer ${resource.accessToken}`
+				Authorization: `Bearer ${accessToken}`
 			}
 		}
 	)
