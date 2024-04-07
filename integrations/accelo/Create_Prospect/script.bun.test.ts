@@ -21,11 +21,26 @@ test('Create Prospect', async () => {
 	).json()) as any
 	const accessToken = accessTokenResponse.access_token
 
+	// Create a company
+	const createCompanyBody = new URLSearchParams({
+		name: 'Test Company'
+	})
+	const createCompanyResponse = (await (
+		await fetch(`https://${resource.deployment}.api.accelo.com/api/v0/companies`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				Authorization: `Bearer ${accessToken}`
+			},
+			body: createCompanyBody
+		})
+	).json()) as any
+
 	// Create a contact
 	const createContactFormData = new URLSearchParams()
 	createContactFormData.append('firstname', 'John')
 	createContactFormData.append('surname', 'Doe')
-	createContactFormData.append('company_id', resource.companyId)
+	createContactFormData.append('company_id', createCompanyResponse.response.id)
 	const createContactResponse = (await (
 		await fetch(`https://${resource.deployment}.api.accelo.com/api/v0/contacts`, {
 			method: 'POST',
@@ -40,7 +55,7 @@ test('Create Prospect', async () => {
 	// Create an affiliation
 	const createAffiliationFormData = new URLSearchParams()
 	createAffiliationFormData.append('contact_id', createContactResponse.response.id)
-	createAffiliationFormData.append('company_id', resource.companyId)
+	createAffiliationFormData.append('company_id', createCompanyResponse.response.id)
 	const createAffiliationResponse = (await (
 		await fetch(`https://${resource.deployment}.api.accelo.com/api/v0/affiliations`, {
 			method: 'POST',
@@ -100,6 +115,17 @@ test('Create Prospect', async () => {
 	// Delete the contact
 	await fetch(
 		`https://${resource.deployment}.api.accelo.com/api/v0/contacts/${createContactResponse.response.id}`,
+		{
+			method: 'DELETE',
+			headers: {
+				Authorization: `Bearer ${accessToken}`
+			}
+		}
+	)
+
+	// Delete the company
+	await fetch(
+		`https://${resource.deployment}.api.accelo.com/api/v0/companies/${createCompanyResponse.response.id}`,
 		{
 			method: 'DELETE',
 			headers: {

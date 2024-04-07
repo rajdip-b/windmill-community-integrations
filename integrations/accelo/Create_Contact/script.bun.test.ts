@@ -21,11 +21,26 @@ test('Create Contact', async () => {
 	).json()) as any
 	const accessToken = accessTokenResponse.access_token
 
+	// Create a company
+	const createCompanyBody = new URLSearchParams({
+		name: 'Test Company'
+	})
+	const createCompanyResponse = (await (
+		await fetch(`https://${resource.deployment}.api.accelo.com/api/v0/companies`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				Authorization: `Bearer ${accessToken}`
+			},
+			body: createCompanyBody
+		})
+	).json()) as any
+
 	// Create a new contact
 	const response = (await main(resource, {
 		firstname: 'John',
 		surname: 'Doe',
-		company_id: +resource.companyId
+		company_id: createCompanyResponse.response.id
 	})) as any
 	expect(response.meta.status).toEqual('ok')
 	expect(response.response.id).toBeDefined()
@@ -49,6 +64,17 @@ test('Create Contact', async () => {
 	// Delete the contact
 	await fetch(
 		`https://${resource.deployment}.api.accelo.com/api/v0/contacts/${response.response.id}`,
+		{
+			method: 'DELETE',
+			headers: {
+				Authorization: `Bearer ${accessToken}`
+			}
+		}
+	)
+
+	// Delete the company
+	await fetch(
+		`https://${resource.deployment}.api.accelo.com/api/v0/companies/${createCompanyResponse.response.id}`,
 		{
 			method: 'DELETE',
 			headers: {
