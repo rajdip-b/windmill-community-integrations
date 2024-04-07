@@ -38,7 +38,7 @@ export async function main(
 	const accessToken = accessTokenResponse.access_token
 
 	const form = new URLSearchParams()
-	Object.entries(data).forEach(([key, value]) => form.append(key, value + ''))
+	Object.entries(data).forEach(([key, value]) => value && form.append(key, value + ''))
 
 	return (
 		await fetch(
