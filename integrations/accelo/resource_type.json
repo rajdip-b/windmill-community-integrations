@@ -17,6 +17,6 @@
 				"description": "The client secret of your Accelo application."
 			}
 		},
-		"required": ["deployment", "companyId", "clientId", "clientSecret"]
+		"required": ["deployment", "clientId", "clientSecret"]
 	}
 }
